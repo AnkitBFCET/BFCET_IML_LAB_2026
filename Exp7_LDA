@@ -1,0 +1,117 @@
+Practical No. 7
+Program to Implement the LDA (Linear Discriminant Analysis) Algorithm in ML
+
+Aim:
+To implement the LDA algorithm step by step: compute the scatter matrices, find the best discriminant directions, reduce the dimensions of the data, and then use LDA to classify new samples.
+
+Software Required:
+Python 3.x, NumPy, scikit-learn, and any text editor / IDLE / VS Code / Jupyter Notebook
+
+(Install the libraries with: pip install numpy scikit-learn)
+
+Program:
+
+python
+# ---------------------------------------------------
+# Program 7: To implement the LDA (Linear Discriminant Analysis)
+# algorithm in Machine Learning.
+# This program shows step by step how LDA finds the best
+# directions that separate the classes, and then uses them
+# for dimensionality reduction and classification.
+# ---------------------------------------------------
+
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# STEP 1: LOAD the dataset (Iris: 150 samples, 4 features, 3 classes)
+iris = load_iris()
+X, y = iris.data, iris.target
+print("Dataset shape:", X.shape)
+print("Classes:", iris.target_names.tolist())
+
+# STEP 2: SPLIT data into training (70%) and testing (30%) sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y)
+
+# STEP 3: LDA FROM SCRATCH
+n_features = X_train.shape[1]
+classes = np.unique(y_train)
+overall_mean = np.mean(X_train, axis=0)
+
+# 3a. Compute Within-class (Sw) and Between-class (Sb) scatter matrices
+Sw = np.zeros((n_features, n_features))
+Sb = np.zeros((n_features, n_features))
+for c in classes:
+    X_c = X_train[y_train == c]
+    mean_c = np.mean(X_c, axis=0)
+    Sw += (X_c - mean_c).T @ (X_c - mean_c)
+    diff = (mean_c - overall_mean).reshape(-1, 1)
+    Sb += len(X_c) * (diff @ diff.T)
+
+# 3b. Solve the eigenvalue problem for inv(Sw) . Sb
+eig_vals, eig_vecs = np.linalg.eig(np.linalg.inv(Sw) @ Sb)
+eig_vals = np.real(eig_vals)
+eig_vecs = np.real(eig_vecs)
+
+# 3c. Sort eigenvectors by eigenvalue (largest first)
+order = np.argsort(eig_vals)[::-1]
+eig_vals = eig_vals[order]
+eig_vecs = eig_vecs[:, order]
+print("\nEigenvalues (sorted):", np.round(eig_vals, 4))
+print("Variance explained by LD1 and LD2: "
+      f"{eig_vals[0] / eig_vals.sum() * 100:.2f}% and "
+      f"{eig_vals[1] / eig_vals.sum() * 100:.2f}%")
+
+# 3d. Select top (n_classes - 1) = 2 discriminants and project the data
+W = eig_vecs[:, :2]
+X_train_lda = X_train @ W
+print("\nShape after LDA projection:", X_train_lda.shape)
+print("First 3 projected samples:\n", np.round(X_train_lda[:3], 3))
+
+# STEP 4: CLASSIFY using scikit-learn's LDA model
+model = LinearDiscriminantAnalysis()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+# STEP 5: EVALUATE the model
+acc = accuracy_score(y_test, y_pred)
+print(f"\nAccuracy of LDA classifier: {acc * 100:.2f}%")
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+
+# STEP 6: Predict the class of a new flower
+new_sample = [[5.1, 3.5, 1.4, 0.2]]
+pred = model.predict(new_sample)
+print("\nNew sample", new_sample[0], "-> Predicted class:", iris.target_names[pred[0]])
+
+Output:
+
+Dataset shape: (150, 4)
+Classes: ['setosa', 'versicolor', 'virginica']
+
+Eigenvalues (sorted): [32.1858  0.3858  0.     -0.    ]
+Variance explained by LD1 and LD2: 98.82% and 1.18%
+
+Shape after LDA projection: (105, 2)
+First 3 projected samples:
+ [[ 0.575 -1.59 ]
+ [ 1.538 -1.353]
+ [-1.237 -2.112]]
+
+Accuracy of LDA classifier: 97.78%
+Confusion Matrix:
+ [[15  0  0]
+ [ 0 15  0]
+ [ 0  1 14]]
+
+New sample [5.1, 3.5, 1.4, 0.2] -> Predicted class: setosa
+
+Result / Learning Outcome:
+
+LDA is a supervised technique used for both dimensionality reduction and classification.
+It finds new axes that maximize the distance between class means (between-class scatter, Sb) and minimize the spread within each class (within-class scatter, Sw).
+The directions are the eigenvectors of inv(Sw) · Sb. The eigenvalue shows how much class separation each direction captures.
+For C classes, LDA gives at most C − 1 useful discriminants. Here there are 3 classes, so there are 2, and the first one (LD1) alone captures about 98.8% of the separation.
+The Iris data was reduced from 4 features to 2 and still classified with 97.78% accuracy.
