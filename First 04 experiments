@@ -1,0 +1,307 @@
+
+IML LAB MANUAL
+
+Name: ______________________________
+Roll No.: ___________________________
+Class / Section: ____________________
+Subject: IML
+
+ Practical No. 1
+Program to implement functions in Python
+Aim:
+To write a Python program to define and call functions with and without parameters, and with default and return values.
+Software Required:
+Python 3.x, any text editor / IDLE / VS Code
+Program:
+# ---------------------------------------------------
+# Program 1: To implement functions in Python
+# A function is a block of reusable code that runs
+# only when it is called. Python allows us to pass
+# data (parameters), give default values, and return
+# results back to the caller.
+# ---------------------------------------------------
+ 
+# 1. A simple function with NO parameters and NO return value
+def greet():
+    # this just prints something, it does not send any value back
+    print("Hello! Welcome to Python functions.")
+ 
+# 2. A function WITH parameters that RETURNS a value
+def add_numbers(a, b):
+    # 'a' and 'b' are called parameters
+    result = a + b
+    return result   # sends the result back to the caller
+ 
+# 3. A function with a DEFAULT parameter value
+def greet_user(name="Student"):
+    # if no argument is passed, "Student" will be used
+    print("Hello,", name, "! Have a nice day.")
+ 
+# 4. A function that checks if a number is even or odd
+def check_even_odd(num):
+    if num % 2 == 0:
+        return f"{num} is Even"
+    else:
+        return f"{num} is Odd"
+ 
+# 5. A function to find the factorial of a number (using a loop)
+def factorial(n):
+    fact = 1
+    for i in range(1, n + 1):
+        fact = fact * i
+    return fact
+ 
+# ---------------- main program (function calls) ----------------
+greet()                              # calling function with no arguments
+ 
+sum_value = add_numbers(15, 25)      # calling function with arguments
+print("Sum of 15 and 25 is:", sum_value)
+ 
+greet_user()                         # uses the default value "Student"
+greet_user("Aman")                   # overrides the default value
+ 
+num = int(input("Enter a number to check Even/Odd: "))
+print(check_even_odd(num))
+ 
+n = int(input("Enter a number to find its factorial: "))
+print(f"Factorial of {n} is {factorial(n)}")
+
+Output:
+Hello! Welcome to Python functions.
+Sum of 15 and 25 is: 40
+Hello, Student ! Have a nice day.
+Hello, Aman ! Have a nice day.
+Enter a number to check Even/Odd: 7
+7 is Odd
+Enter a number to find its factorial: 5
+Factorial of 5 is 120
+Result / Learning Outcome:
+●	Functions help in avoiding repetition of the same code again and again.
+●	Parameters allow us to pass values into a function.
+●	The return statement is used to send a value back to the caller.
+●	A default parameter is used automatically when no value is passed.
+
+ Practical No. 2
+Program to implement local and global variables in Python
+Aim:
+To understand the difference between local and global variables and to use the 'global' keyword to modify a global variable inside a function.
+Software Required:
+Python 3.x, any text editor / IDLE / VS Code
+Program:
+# ---------------------------------------------------
+# Program 2: To implement Local and Global variables
+# A GLOBAL variable is declared outside all functions
+# and can be accessed anywhere in the program.
+# A LOCAL variable is declared inside a function and
+# can be used only inside that function.
+# ---------------------------------------------------
+ 
+x = 100     # this is a GLOBAL variable
+ 
+def show_local():
+    # 'y' below is a LOCAL variable, it exists only
+    # inside this function, once the function ends,
+    # 'y' is destroyed automatically
+    y = 10
+    print("Inside show_local() -> local variable y =", y)
+    print("Inside show_local() -> global variable x =", x)
+ 
+def modify_global():
+    # to CHANGE a global variable inside a function,
+    # we must use the 'global' keyword, otherwise
+    # Python will create a new local variable instead
+    global x
+    x = x + 50
+    print("Inside modify_global() -> updated global x =", x)
+ 
+def local_shadow():
+    # here 'x' is treated as a NEW local variable
+    # because we did not use the 'global' keyword
+    # (it does NOT change the global x)
+    x = 5
+    print("Inside local_shadow() -> local x =", x)
+ 
+# ---------------- main program ----------------
+print("Value of global x before any function call:", x)
+ 
+show_local()
+ 
+# trying to access 'y' here would give an ERROR
+# because 'y' is local to show_local() only
+# print(y)   # <-- this line would raise NameError
+ 
+modify_global()
+print("Value of global x after modify_global():", x)
+ 
+local_shadow()
+print("Value of global x after local_shadow():", x)   # unchanged
+
+Output:
+Value of global x before any function call: 100
+Inside show_local() -> local variable y = 10
+Inside show_local() -> global variable x = 100
+Inside modify_global() -> updated global x = 150
+Value of global x after modify_global(): 150
+Inside local_shadow() -> local x = 5
+Value of global x after local_shadow(): 150
+Result / Learning Outcome:
+●	A variable declared inside a function is local and cannot be used outside it.
+●	A variable declared outside all functions is global and can be accessed anywhere.
+●	The 'global' keyword must be used inside a function to modify a global variable.
+●	Without the 'global' keyword, Python creates a new local variable instead of changing the global one.
+
+ Practical No. 3
+Program to implement File Handling in Python
+Aim:
+To perform basic file handling operations such as opening, writing, appending, reading and closing a file, along with basic exception handling.
+Software Required:
+Python 3.x, any text editor / IDLE / VS Code
+Program:
+# ---------------------------------------------------
+# Program 3: To implement File Handling in Python
+# File handling means performing operations like
+# open, read, write, append and close on a file.
+# Python provides the built-in open() function for this.
+#
+# Common modes used with open():
+#   'r'  -> read (file must already exist)
+#   'w'  -> write (creates new file / overwrites old one)
+#   'a'  -> append (adds data at the end of file)
+#   'r+' -> read and write
+# ---------------------------------------------------
+ 
+# 1. Opening a file in WRITE mode (creates the file if not present)
+file1 = open("student.txt", "w")
+file1.write("Name: Rohit Sharma\n")
+file1.write("Course: BCA\n")
+file1.write("Marks: 85\n")
+file1.close()          # always close the file after use
+print("Data written to student.txt successfully.")
+ 
+# 2. Opening the SAME file in APPEND mode to add more data
+file2 = open("student.txt", "a")
+file2.write("Result: Pass\n")
+file2.close()
+print("Additional data appended to student.txt.")
+ 
+# 3. Opening the file in READ mode
+file3 = open("student.txt", "r")
+content = file3.read()      # reads the whole file at once
+file3.close()
+print("\n----- Contents of student.txt -----")
+print(content)
+ 
+# 4. Using 'with' statement (best practice - closes file automatically)
+with open("student.txt", "r") as file4:
+    for line in file4:              # reading line by line
+        print("Line ->", line.strip())
+ 
+# 5. Basic exception handling while dealing with files
+try:
+    file5 = open("marks.txt", "r")   # this file does not exist yet
+    print(file5.read())
+    file5.close()
+except FileNotFoundError:
+    print("\nError: marks.txt does not exist, please create it first.")
+
+Output:
+Data written to student.txt successfully.
+Additional data appended to student.txt.
+
+----- Contents of student.txt -----
+Name: Rohit Sharma
+Course: BCA
+Marks: 85
+Result: Pass
+
+Line -> Name: Rohit Sharma
+Line -> Course: BCA
+Line -> Marks: 85
+Line -> Result: Pass
+
+Error: marks.txt does not exist, please create it first.
+Result / Learning Outcome:
+●	The open() function is used to open a file in different modes such as 'r', 'w' and 'a'.
+●	It is important to close a file after using it to free up system resources.
+●	The 'with' statement automatically closes the file even if an error occurs.
+●	try-except blocks help handle errors like FileNotFoundError gracefully.
+
+ Practical No. 4
+Program to Read, Write and Create a text file in Python
+Aim:
+To create a new text file, write data into it, append more data, and then read the data back using read() and readlines().
+Software Required:
+Python 3.x, any text editor / IDLE / VS Code
+Program:
+# ---------------------------------------------------
+# Program 4: To Read, Write and Create a text file in Python
+# This program shows step by step how a new text file
+# is created, how data is written into it, and how
+# the same data is later read back from the file.
+# ---------------------------------------------------
+ 
+file_name = "diary.txt"
+ 
+# STEP 1: CREATE and WRITE a new text file
+# ('w' mode will create the file if it does not exist,
+#  and will overwrite it if it already exists)
+with open(file_name, "w") as f:
+    f.write("Today I learned file handling in Python.\n")
+    f.write("It is very easy to create and use text files.\n")
+print(f"'{file_name}' has been created and data has been written.")
+ 
+# STEP 2: WRITE more lines using writelines()
+lines_to_add = [
+    "Python supports read, write and append modes.\n",
+    "This makes file handling simple and powerful.\n"
+]
+with open(file_name, "a") as f:      # 'a' mode -> append, does not erase old data
+    f.writelines(lines_to_add)
+print("More lines added using writelines().")
+ 
+# STEP 3: READ the complete file using read()
+with open(file_name, "r") as f:
+    data = f.read()
+print("\n----- Full file content (using read()) -----")
+print(data)
+ 
+# STEP 4: READ the file line by line using readlines()
+with open(file_name, "r") as f:
+    all_lines = f.readlines()
+ 
+print("----- File content (using readlines()) -----")
+for index, line in enumerate(all_lines, start=1):
+    print(f"Line {index}: {line.strip()}")
+ 
+# STEP 5: Count total number of lines and words in the file
+with open(file_name, "r") as f:
+    text = f.read()
+ 
+total_lines = len(text.strip().split("\n"))
+total_words = len(text.split())
+print(f"\nTotal Lines in file: {total_lines}")
+print(f"Total Words in file: {total_words}")
+
+Output:
+'diary.txt' has been created and data has been written.
+More lines added using writelines().
+
+----- Full file content (using read()) -----
+Today I learned file handling in Python.
+It is very easy to create and use text files.
+Python supports read, write and append modes.
+This makes file handling simple and powerful.
+
+----- File content (using readlines()) -----
+Line 1: Today I learned file handling in Python.
+Line 2: It is very easy to create and use text files.
+Line 3: Python supports read, write and append modes.
+Line 4: This makes file handling simple and powerful.
+
+Total Lines in file: 4
+Total Words in file: 27
+Result / Learning Outcome:
+●	The 'w' mode creates a new file if it does not already exist.
+●	The 'a' mode is used to add data at the end of an existing file without deleting old data.
+●	read() returns the entire file content as a single string.
+●	readlines() returns the file content as a list, with each line as one list item.
